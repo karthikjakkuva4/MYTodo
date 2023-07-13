@@ -32,11 +32,13 @@ router.get('/api/items', async (req, res)=>{
 router.put('/api/item/:id', async (req, res)=>{
   try{
     //find the item by its id and update it
-    const updateItem = await todoItemsModel.findByIdAndUpdate(req.params.id, {$set: req.body});
+    const updateItem = await todoItemsModel.findByIdAndUpdate(req.params.id, {$set: req.body},{new: true});
+    console.log(updateItem);
     res.status(200).json(updateItem);
   }catch(err){
     res.json(err);
   }
+  
 })
 
 

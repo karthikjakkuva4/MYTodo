@@ -1,105 +1,86 @@
-.todo-app {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-}
-
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.input-container {
+.App {
   display: flex;
-  margin-bottom: 20px;
-}
-
-input {
-  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  width: 500px;
+  margin: 50px auto;
   padding: 10px;
-  border: none;
-  border-radius: 5px 0 0 5px;
+  border-radius: 8px;
 }
-
-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.App h1{
+  text-align: center;
 }
-
-button:hover {
-  background-color: #0056b3;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
+.form{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  width: 100%;
+  margin-bottom: 12px
 }
-
-li:hover {
-  transform: translateY(-3px);
+.form input[type="text"]{
+  padding:10px;
+  width: 85%;
+  border: 1px solid #eee;
+  border-radius: 6px;
 }
-
-li button {
-  background-color: #dc3545;
+.form input[type="text"]:focus,
+.form button[type="submit"]:focus{
+  outline:none;
+}
+.form button[type="submit"]{
+  background-color: #008080;
   color: #fff;
   border: none;
-  padding: 5px 10px;
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer
+}
+.todo-listItems{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.todo-item{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px
+}
+.item-content{
+  width: 60%
+}
+.todo-item button{
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  padding: 8px
 }
-
-li button:hover {
-  background-color: #c82333;
+.todo-item button:focus{
+  outline:none
 }
-
-.edit {
-  font-weight: bold;
+.update-item{
+  background-color: goldenrod;
+  color:#fff;
 }
-
-.edit-button {
-  background-color: #ffc107;
+.delete-item{
+  background-color: red;
+  color:#fff;
 }
-
-.delete-button {
-  background-color: #ff0000;
+.update-form{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
-
-.todo-item-1 {
-  background-color: #ffebee;
+.update-new-input{
+  width: 80%;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  padding: 8px;
+  outline: none;
 }
-
-.todo-item-2 {
-  background-color: #e8f5e9;
-}
-
-.todo-item-3 {
-  background-color: #e3f2fd;
-}
-
-.todo-item-4 {
-  background-color: #fff9c4;
-}
-
-.todo-item-5 {
-  background-color: #f3e5f5;
+.update-new-btn{
+  background-color: darkorchid;
+  color: #fff;
+  cursor: pointer;
 }

@@ -1,67 +1,100 @@
-import React, { useState } from 'react';
-import './App.css'; // Import the CSS file
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import './App.css';
 
-const TodoListApp = () => {
-  const [todos, setTodos] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const [editIndex, setEditIndex] = useState(-1);
+function App() {
+  const [itemText, setItemText] = useState('');
+  const [listItems, setListItems] = useState([]);
+  const [isUpdating, setIsUpdating] = useState('');
+  const [updateItemText, setUpdateItemText] = useState('');
 
-  const addTodo = () => {
-    if (inputValue.trim() !== '') {
-      if (editIndex !== -1) {
-        // Update existing todo
-        const updatedTodos = [...todos];
-        updatedTodos[editIndex] = inputValue;
-        setTodos(updatedTodos);
-        setEditIndex(-1);
-      } else {
-        // Add new todo
-        setTodos([...todos, inputValue]);
-      }
-      setInputValue('');
+  //add new todo item to database
+  const addItem = async (e) => {
+    e.preventDefault();
+    try{
+      const res = await axios.post('http://localhost:5500/api/item', {item: itemText})
+      setListItems(prev => [...prev, res.data]);
+      setItemText('');
+    }catch(err){
+      console.log(err);
     }
-  };
+  }
 
-  const deleteTodo = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos.splice(index, 1);
-    setTodos(updatedTodos);
-  };
+  //Create function to fetch all todo items from database -- we will use useEffect hook
+  useEffect(()=>{
+    const getItemsList = async () => {
+      try{
+        const res = await axios.get('http://localhost:5500/api/items')
+        setListItems(res.data);
+        console.log('render')
+      }catch(err){
+        console.log(err);
+      }
+    }
+    getItemsList()
+  },[]);
 
-  const editTodo = (index) => {
-    setInputValue(todos[index]);
-    setEditIndex(index);
-  };
+  // Delete item when click on delete
+  const deleteItem = async (id) => {
+    try{
+      const res = await axios.delete(`http://localhost:5500/api/item/${id}`)
+      const newListItems = listItems.filter(item=> item._id !== id);
+      setListItems(newListItems);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  //Update item
+  const updateItem = async (e) => {
+    e.preventDefault()
+    try{
+      const res = await axios.put(`http://localhost:5500/api/item/${isUpdating}`, {item: updateItemText})
+      console.log(res.data)
+      const updatedItemIndex = listItems.findIndex(item => item._id === isUpdating);
+      const updatedItem = listItems[updatedItemIndex].item = updateItemText;
+      setUpdateItemText('');
+      setIsUpdating('');
+    }catch(err){
+      console.log(err);
+    }
+  }
+  //before updating item we need to show input field where we will create our updated item
+  const renderUpdateForm = () => (
+    <form className="update-form" onSubmit={(e)=>{updateItem(e)}} >
+      <input className="update-new-input" type="text" placeholder="New Item" onChange={e=>{setUpdateItemText(e.target.value)}} value={updateItemText} />
+      <button className="update-new-btn" type="submit">Update</button>
+    </form>
+  )
 
   return (
-    <div className="todo-app">
+    <div className="App">
       <h1>Todo List</h1>
-      <div className="input-container">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <button onClick={addTodo}>{editIndex !== -1 ? 'Update' : 'Add'}</button>
-      </div>
-      <ul>
-  {todos.map((todo, index) => (
-    <li key={index} className={`todo-item-${index % 5 + 1}`}>
-      <span className={index === editIndex ? 'edit' : ''}>{todo}</span>
-      <div>
-        <button className="edit-button" onClick={() => editTodo(index)}>
-          Edit
-        </button>
-        <button className="delete-button" onClick={() => deleteTodo(index)}>
-          Delete
-        </button>
-      </div>
-    </li>
-  ))}
-</ul>
+      <form className="form" onSubmit={e => addItem(e)}>
+        <input type="text" placeholder='Add Todo Item' onChange={e => {setItemText(e.target.value)} } value={itemText} />
+        <button type="submit">Add</button>
+      </form>
+      <div className="todo-listItems">
+        {
+          listItems.map(item => (
+          <div className="todo-item">
+            {
+              isUpdating === item._id
+              ? renderUpdateForm()
+              : <>
+                  <p className="item-content">{item.item}</p>
+                  <button className="update-item" onClick={()=>{setIsUpdating(item._id)}}>Update</button>
+                  <button className="delete-item" onClick={()=>{deleteItem(item._id)}}>Delete</button>
+                </>
+            }
+          </div>
+          ))
+        }
+        
 
+      </div>
     </div>
   );
-};
+}
 
-export default TodoListApp;
+export default App;
